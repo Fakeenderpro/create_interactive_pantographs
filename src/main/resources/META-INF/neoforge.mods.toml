@@ -1,0 +1,39 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="MIT License"
+
+[[mods]]
+modId="create_interactive_pantographs"
+version="1.0.0"
+displayName="Create Interactive Pantographs"
+description="Makes CEE pantographs interactable inside trains"
+authors="Fake_enderpro"
+logoFile = "pack.png"
+
+[[dependencies.create_interactive_pantographs]]
+    modId="neoforge"
+    type="required"
+    versionRange="[21.1.232,)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.create_interactive_pantographs]]
+    modId="minecraft"
+    type="required"
+    versionRange="[1.21.1]"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.create_interactive_pantographs]]
+    modId="create"
+    type="required"
+    versionRange="[6.0.10,6.1.0)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.create_interactive_pantographs]]
+    modId="electroenergetics"
+    type="required"
+    versionRange="[1.0.0,)"
+    ordering="AFTER"
+    side="BOTH"

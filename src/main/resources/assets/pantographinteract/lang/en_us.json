@@ -1,0 +1,6 @@
+{
+  "create_interactive_pantographs.schedule.instruction.pantograph": "Set Pantographs",
+  "block.electroenergetics.pantograph.tooltip.summary": "A _pantograph_ mounted on a train can be set to different _modes_: manual, automatic, automatic (inverted), schedule and schedule (inverted).",
+  "block.electroenergetics.pantograph.tooltip.control1": "When _Wrenched_ or _Shift-Right-Clicked_",
+  "block.electroenergetics.pantograph.tooltip.action1": "Cycles the _mode_ of the pantograph"
+}
