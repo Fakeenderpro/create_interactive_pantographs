@@ -86,6 +86,10 @@ public class PantographInteraction extends MovingInteractionBehaviour {
     private static void setMode(MovementContext context, int mode) {
         context.data.putInt(PantographDirection.MODE_KEY, mode);
         context.data.remove(PantographSchedule.RAISED_KEY);
+        context.data.remove(PantographDirection.AUTO_KEY);
+        context.data.remove(PantographDirection.MANUAL_KEY);
+        if (mode == PantographDirection.MANUAL)
+            context.data.putBoolean(PantographDirection.MANUAL_KEY, !context.disabled);
     }
 
     private static boolean isWrench(ItemStack stack) {
@@ -95,11 +99,13 @@ public class PantographInteraction extends MovingInteractionBehaviour {
     private static void setPair(AbstractContraptionEntity contraptionEntity, MovementContext context, boolean disabled) {
         apply(contraptionEntity, context.localPos, disabled);
         send(contraptionEntity, context.localPos, disabled);
+        context.data.putBoolean(PantographDirection.MANUAL_KEY, !disabled);
 
         MovementContext partner = findPartner(contraptionEntity, context);
         if (partner != null) {
             apply(contraptionEntity, partner.localPos, disabled);
             send(contraptionEntity, partner.localPos, disabled);
+            partner.data.putBoolean(PantographDirection.MANUAL_KEY, !disabled);
         }
     }
 

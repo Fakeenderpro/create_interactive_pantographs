@@ -22,6 +22,8 @@ public final class PantographInteractMod {
         modEventBus.addListener(PantographInteractMod::commonSetup);
         modEventBus.addListener(PantographInteractMod::registerPayloads);
         NeoForge.EVENT_BUS.addListener(PantographDirection::onEntityTick);
+        NeoForge.EVENT_BUS.addListener(PantographDirection::onEntityTickPre);
+        NeoForge.EVENT_BUS.addListener(PantographDirection::onStartTracking);
     }
 
     private static void registerPayloads(RegisterPayloadHandlersEvent event) {
