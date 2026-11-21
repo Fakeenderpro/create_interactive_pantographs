@@ -1,8 +1,0 @@
-/difficulty peaceful
-/tick freeze
-/tick unfreeze
-/tick freeze
-/tick unfreeze
-/time set day
-/weather clear
-/time set day
