@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 public final class PantographInteractMod {
@@ -24,11 +25,16 @@ public final class PantographInteractMod {
         NeoForge.EVENT_BUS.addListener(PantographDirection::onEntityTick);
         NeoForge.EVENT_BUS.addListener(PantographDirection::onEntityTickPre);
         NeoForge.EVENT_BUS.addListener(PantographDirection::onStartTracking);
+        NeoForge.EVENT_BUS.addListener(PantographInteractMod::serverStopped);
     }
 
     private static void registerPayloads(RegisterPayloadHandlersEvent event) {
         event.registrar(NETWORK_VERSION).playToClient(
             PantographSyncPayload.TYPE, PantographSyncPayload.CODEC, PantographSyncPayload::handle);
+    }
+
+    private static void serverStopped(ServerStoppedEvent event) {
+        PantographSchedule.clear();
     }
 
     private static void commonSetup(FMLCommonSetupEvent event) {

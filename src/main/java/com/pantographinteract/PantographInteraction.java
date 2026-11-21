@@ -65,10 +65,13 @@ public class PantographInteraction extends MovingInteractionBehaviour {
                                      MovementContext context) {
         int mode = (context.data.getInt(PantographDirection.MODE_KEY) + 1) % PantographDirection.MODE_COUNT;
         setMode(context, mode);
+        send(contraptionEntity, context, context.disabled);
 
         MovementContext partner = findPartner(contraptionEntity, context);
-        if (partner != null)
+        if (partner != null) {
             setMode(partner, mode);
+            send(contraptionEntity, partner, partner.disabled);
+        }
 
         String message = switch (mode) {
             case PantographDirection.FOLLOW -> "Mode: automatic";
@@ -98,20 +101,21 @@ public class PantographInteraction extends MovingInteractionBehaviour {
 
     private static void setPair(AbstractContraptionEntity contraptionEntity, MovementContext context, boolean disabled) {
         apply(contraptionEntity, context.localPos, disabled);
-        send(contraptionEntity, context.localPos, disabled);
+        send(contraptionEntity, context, disabled);
         context.data.putBoolean(PantographDirection.MANUAL_KEY, !disabled);
 
         MovementContext partner = findPartner(contraptionEntity, context);
         if (partner != null) {
             apply(contraptionEntity, partner.localPos, disabled);
-            send(contraptionEntity, partner.localPos, disabled);
+            send(contraptionEntity, partner, disabled);
             partner.data.putBoolean(PantographDirection.MANUAL_KEY, !disabled);
         }
     }
 
-    private static void send(AbstractContraptionEntity contraptionEntity, BlockPos localPos, boolean disabled) {
+    private static void send(AbstractContraptionEntity contraptionEntity, MovementContext context, boolean disabled) {
         PacketDistributor.sendToPlayersTrackingEntity(contraptionEntity,
-            new PantographSyncPayload(contraptionEntity.getId(), localPos, disabled));
+            new PantographSyncPayload(contraptionEntity.getId(), context.localPos, disabled,
+                context.data.getInt(PantographDirection.MODE_KEY)));
     }
 
     public static void apply(AbstractContraptionEntity contraptionEntity, BlockPos localPos, boolean disabled) {
@@ -120,7 +124,13 @@ public class PantographInteraction extends MovingInteractionBehaviour {
             context.disabled = disabled;
     }
 
-    private static MovementContext findPartner(AbstractContraptionEntity contraptionEntity, MovementContext context) {
+    public static void applyMode(AbstractContraptionEntity contraptionEntity, BlockPos localPos, int mode) {
+        MovementContext context = findContext(contraptionEntity, localPos);
+        if (context != null)
+            context.data.putInt(PantographDirection.MODE_KEY, mode);
+    }
+
+    static MovementContext findPartner(AbstractContraptionEntity contraptionEntity, MovementContext context) {
         BlockState state = context.state;
         if (!state.hasProperty(HorizontalDirectionalBlock.FACING) || !isDouble(state))
             return null;
@@ -143,7 +153,7 @@ public class PantographInteraction extends MovingInteractionBehaviour {
         return false;
     }
 
-    private static MovementContext findContext(AbstractContraptionEntity contraptionEntity, BlockPos localPos) {
+    static MovementContext findContext(AbstractContraptionEntity contraptionEntity, BlockPos localPos) {
         for (var actor : contraptionEntity.getContraption().getActors()) {
             MovementContext context = actor.right;
             if (context != null && context.localPos.equals(localPos))

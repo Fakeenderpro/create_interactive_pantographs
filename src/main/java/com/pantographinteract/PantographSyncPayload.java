@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record PantographSyncPayload(int entityId, BlockPos localPos, boolean disabled)
+public record PantographSyncPayload(int entityId, BlockPos localPos, boolean disabled, int mode)
     implements CustomPacketPayload {
 
     public static final Type<PantographSyncPayload> TYPE =
@@ -24,10 +24,11 @@ public record PantographSyncPayload(int entityId, BlockPos localPos, boolean dis
         buf.writeVarInt(entityId);
         buf.writeBlockPos(localPos);
         buf.writeBoolean(disabled);
+        buf.writeVarInt(mode);
     }
 
     private static PantographSyncPayload read(FriendlyByteBuf buf) {
-        return new PantographSyncPayload(buf.readVarInt(), buf.readBlockPos(), buf.readBoolean());
+        return new PantographSyncPayload(buf.readVarInt(), buf.readBlockPos(), buf.readBoolean(), buf.readVarInt());
     }
 
     @Override
@@ -40,8 +41,10 @@ public record PantographSyncPayload(int entityId, BlockPos localPos, boolean dis
             return;
         context.enqueueWork(() -> {
             Entity entity = context.player().level().getEntity(payload.entityId());
-            if (entity instanceof AbstractContraptionEntity contraptionEntity)
+            if (entity instanceof AbstractContraptionEntity contraptionEntity) {
                 PantographInteraction.apply(contraptionEntity, payload.localPos(), payload.disabled());
+                PantographInteraction.applyMode(contraptionEntity, payload.localPos(), payload.mode());
+            }
         });
     }
 }

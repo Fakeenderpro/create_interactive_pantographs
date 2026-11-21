@@ -32,6 +32,16 @@ public final class PantographDirection {
 
     private PantographDirection() {}
 
+    public static String modeName(int mode) {
+        return switch (mode) {
+            case FOLLOW -> "Automatic";
+            case OPPOSE -> "Automatic (inverted)";
+            case SCHEDULE_STANDARD -> "Schedule";
+            case SCHEDULE_INVERTED -> "Schedule (inverted)";
+            default -> "Manual";
+        };
+    }
+
     public static boolean isAutomatic(int mode) {
         return mode == FOLLOW || mode == OPPOSE;
     }
@@ -66,12 +76,15 @@ public final class PantographDirection {
             if (context == null)
                 continue;
 
+            int mode = context.data.getInt(MODE_KEY);
             Boolean raise = storedRaise(context);
-            if (raise != null) {
+            if (raise == null && mode == MANUAL)
+                continue;
+
+            if (raise != null)
                 context.disabled = !raise;
-                PacketDistributor.sendToPlayer(player,
-                    new PantographSyncPayload(carriageEntity.getId(), context.localPos, context.disabled));
-            }
+            PacketDistributor.sendToPlayer(player,
+                new PantographSyncPayload(carriageEntity.getId(), context.localPos, context.disabled, mode));
         }
     }
 
@@ -140,7 +153,7 @@ public final class PantographDirection {
 
             if (send) {
                 PacketDistributor.sendToPlayersTrackingEntity(carriageEntity,
-                    new PantographSyncPayload(carriageEntity.getId(), context.localPos, context.disabled));
+                    new PantographSyncPayload(carriageEntity.getId(), context.localPos, context.disabled, mode));
             }
         }
     }

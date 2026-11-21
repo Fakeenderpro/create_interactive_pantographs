@@ -18,6 +18,10 @@ public final class PantographSchedule {
         STATES.computeIfAbsent(trainId, id -> new ConcurrentHashMap<>()).put(mode, raised);
     }
 
+    public static void clear() {
+        STATES.clear();
+    }
+
     public static Boolean get(UUID trainId, int mode) {
         Map<Integer, Boolean> states = STATES.get(trainId);
         return states == null ? null : states.get(mode);
