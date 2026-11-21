@@ -4,7 +4,7 @@ license="MIT License"
 
 [[mods]]
 modId="create_interactive_pantographs"
-version="1.0.0"
+version="1.0.1"
 displayName="Create Interactive Pantographs"
 description="Makes CEE pantographs interactable inside trains"
 authors="Fake_enderpro"

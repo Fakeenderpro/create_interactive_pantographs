@@ -56,14 +56,15 @@ public class PantographInstruction extends ScheduleInstruction {
 
     @Override
     public List<Component> getTitleAs(String type) {
-        return List.of(Component.literal("Pantographs: ").withStyle(ChatFormatting.GOLD)
+        return List.of(PantographText.of("schedule.title").withStyle(ChatFormatting.GOLD)
+            .append(Component.literal(" "))
             .append(summary().withStyle(ChatFormatting.WHITE)));
     }
 
     @Override
     public void initConfigurationWidgets(ModularGuiLineBuilder builder) {
-        builder.addSelectionScrollInput(0, 56, (input, label) -> configure(input, "Standard pantographs", "Std"), STANDARD);
-        builder.addSelectionScrollInput(60, 58, (input, label) -> configure(input, "Inverted pantographs", "Inv"), INVERTED);
+        builder.addSelectionScrollInput(0, 56, (input, label) -> configure(input, "standard"), STANDARD);
+        builder.addSelectionScrollInput(60, 58, (input, label) -> configure(input, "inverted"), INVERTED);
     }
 
     @Override
@@ -76,12 +77,12 @@ public class PantographInstruction extends ScheduleInstruction {
         return null;
     }
 
-    private static void configure(SelectionScrollInput input, String title, String prefix) {
+    private static void configure(SelectionScrollInput input, String group) {
         input.forOptions(List.of(
-            Component.literal(prefix + ": Keep"),
-            Component.literal(prefix + ": Raise"),
-            Component.literal(prefix + ": Lower")))
-            .titled(Component.literal(title));
+            PantographText.of("schedule." + group + ".keep"),
+            PantographText.of("schedule." + group + ".raise"),
+            PantographText.of("schedule." + group + ".lower")))
+            .titled(PantographText.of("schedule." + group + ".title"));
     }
 
     private static void schedule(UUID trainId, int mode, int value) {
@@ -92,17 +93,26 @@ public class PantographInstruction extends ScheduleInstruction {
     }
 
     private MutableComponent summary() {
-        List<String> parts = new ArrayList<>();
-        describe(parts, "Standard", intData(STANDARD));
-        describe(parts, "Inverted", intData(INVERTED));
-        return Component.literal(parts.isEmpty() ? "No change" : String.join(", ", parts));
+        List<MutableComponent> parts = new ArrayList<>();
+        describe(parts, "standard", intData(STANDARD));
+        describe(parts, "inverted", intData(INVERTED));
+        if (parts.isEmpty())
+            return PantographText.of("schedule.no_change");
+
+        MutableComponent summary = Component.empty();
+        for (int i = 0; i < parts.size(); i++) {
+            if (i > 0)
+                summary.append(Component.literal(", "));
+            summary.append(parts.get(i));
+        }
+        return summary;
     }
 
-    private static void describe(List<String> parts, String group, int value) {
+    private static void describe(List<MutableComponent> parts, String group, int value) {
         if (value == RAISE)
-            parts.add(group + " raised");
+            parts.add(PantographText.of("schedule." + group + ".raised"));
         else if (value == LOWER)
-            parts.add(group + " lowered");
+            parts.add(PantographText.of("schedule." + group + ".lowered"));
     }
 
     private static ItemStack icon() {

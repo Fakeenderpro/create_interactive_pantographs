@@ -6,6 +6,7 @@ import com.simibubi.create.content.contraptions.behaviour.MovementContext;
 import com.simibubi.create.content.trains.entity.Carriage;
 import com.simibubi.create.content.trains.entity.CarriageContraptionEntity;
 
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -32,14 +33,14 @@ public final class PantographDirection {
 
     private PantographDirection() {}
 
-    public static String modeName(int mode) {
-        return switch (mode) {
-            case FOLLOW -> "Automatic";
-            case OPPOSE -> "Automatic (inverted)";
-            case SCHEDULE_STANDARD -> "Schedule";
-            case SCHEDULE_INVERTED -> "Schedule (inverted)";
-            default -> "Manual";
-        };
+    public static MutableComponent modeName(int mode) {
+        return PantographText.of(switch (mode) {
+            case FOLLOW -> "mode.automatic";
+            case OPPOSE -> "mode.automatic_inverted";
+            case SCHEDULE_STANDARD -> "mode.schedule";
+            case SCHEDULE_INVERTED -> "mode.schedule_inverted";
+            default -> "mode.manual";
+        });
     }
 
     public static boolean isAutomatic(int mode) {

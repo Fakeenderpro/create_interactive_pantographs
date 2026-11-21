@@ -7,7 +7,6 @@ import com.simibubi.create.content.contraptions.behaviour.MovementContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -43,12 +42,12 @@ public class PantographInteraction extends MovingInteractionBehaviour {
         int currentMode = context.data.getInt(PantographDirection.MODE_KEY);
         if (PantographDirection.isAutomatic(currentMode)) {
             player.displayClientMessage(
-                Component.literal("Automatic mode, sneak-click or use a wrench to change it"), true);
+                PantographText.of("message.automatic_locked"), true);
             return true;
         }
         if (PantographDirection.isSchedule(currentMode)) {
             player.displayClientMessage(
-                Component.literal("Schedule mode, sneak-click or use a wrench to change it"), true);
+                PantographText.of("message.schedule_locked"), true);
             return true;
         }
 
@@ -57,7 +56,7 @@ public class PantographInteraction extends MovingInteractionBehaviour {
 
         player.level().playSound(null, player.blockPosition(),
             SoundEvents.CHAIN_HIT, SoundSource.NEUTRAL, 0.5f, disable ? 0.8f : 1.0f);
-        player.displayClientMessage(Component.literal("Pantograph " + (disable ? "lowered" : "raised")), true);
+        player.displayClientMessage(PantographText.of(disable ? "message.lowered" : "message.raised"), true);
         return true;
     }
 
@@ -73,14 +72,14 @@ public class PantographInteraction extends MovingInteractionBehaviour {
             send(contraptionEntity, partner, partner.disabled);
         }
 
-        String message = switch (mode) {
-            case PantographDirection.FOLLOW -> "Mode: automatic";
-            case PantographDirection.OPPOSE -> "Mode: automatic (inverted)";
-            case PantographDirection.SCHEDULE_STANDARD -> "Mode: schedule";
-            case PantographDirection.SCHEDULE_INVERTED -> "Mode: schedule (inverted)";
-            default -> "Mode: manual";
+        String messageKey = switch (mode) {
+            case PantographDirection.FOLLOW -> "message.mode.automatic";
+            case PantographDirection.OPPOSE -> "message.mode.automatic_inverted";
+            case PantographDirection.SCHEDULE_STANDARD -> "message.mode.schedule";
+            case PantographDirection.SCHEDULE_INVERTED -> "message.mode.schedule_inverted";
+            default -> "message.mode.manual";
         };
-        player.displayClientMessage(Component.literal(message), true);
+        player.displayClientMessage(PantographText.of(messageKey), true);
         player.level().playSound(null, player.blockPosition(),
             SoundEvents.LEVER_CLICK, SoundSource.NEUTRAL, 0.5f, 1.0f);
         return true;

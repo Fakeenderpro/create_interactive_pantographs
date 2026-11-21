@@ -122,8 +122,9 @@ public final class PantographClient {
         int mode = context.data.getInt(PantographDirection.MODE_KEY);
         List<Component> tooltip = new ArrayList<>();
         tooltip.add(Component.literal("    ")
-            .append(Component.literal("Pantograph mode: ").withStyle(ChatFormatting.GRAY))
-            .append(Component.literal(PantographDirection.modeName(mode)).withStyle(ChatFormatting.GOLD)));
+            .append(PantographText.of("overlay.mode").withStyle(ChatFormatting.GRAY))
+            .append(Component.literal(" "))
+            .append(PantographDirection.modeName(mode).withStyle(ChatFormatting.GOLD)));
 
         draw(graphics, mc, tooltip);
     }
