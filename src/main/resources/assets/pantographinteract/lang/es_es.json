@@ -1,0 +1,6 @@
+{
+  "create_interactive_pantographs.schedule.instruction.pantograph": "Ajustar pantógrafos",
+  "block.electroenergetics.pantograph.tooltip.summary": "Un _pantógrafo_ montado en un tren se puede ajustar en distintos _modos_: manual, automático, automático (invertido), por horarios y por horarios (invertido).",
+  "block.electroenergetics.pantograph.tooltip.control1": "Al usar la _llave inglesa_ o hacer _Shift + Clic derecho_",
+  "block.electroenergetics.pantograph.tooltip.action1": "Cambia el _modo_ del pantógrafo"
+}
